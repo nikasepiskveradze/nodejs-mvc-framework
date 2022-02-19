@@ -1,19 +1,23 @@
 import http from 'http';
-import db from './bootstrap';
+import Router from './core/Router';
+import Request from './core/Request';
+import routes from './routes';
 
 const hostname = '127.0.0.1';
 const port = 3001;
 
+const router = Router.load(routes);
+
 const server = http.createServer((req, res) => {
+  const uri = Request.uri(req);
+  if (uri.path === '/favicon.ico') return;
+
+  console.log('controller', router.direct(String(uri.path)));
+
   res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello world');
+  res.end();
 });
 
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
-});
-
-db.selectAll('todos').then((todos) => {
-  console.log('todos', todos);
 });
