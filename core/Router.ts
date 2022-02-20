@@ -1,24 +1,24 @@
 class Router {
-  private routes: any = {};
+  private routes: any = {
+    GET: {},
+    POST: {},
+  };
 
-  public static load(routes: any) {
-    const router = new Router();
-    router.define(routes);
-
-    return router;
+  public get(uri: string, controller: any) {
+    this.routes['GET'][uri] = controller;
   }
 
-  public define(routes: any) {
-    this.routes = routes;
+  public post(uri: string, controller: any) {
+    this.routes['POST'][uri] = controller;
   }
 
-  public direct(uri: string) {
-    if (this.routes[uri]) {
-      return this.routes[uri];
+  public direct(method: string, uri: string) {
+    if (this.routes[method][uri]) {
+      return this.routes[method][uri].split('@');
     }
 
     throw new Error('No route defined for this URI');
   }
 }
 
-export default Router;
+export default new Router();
